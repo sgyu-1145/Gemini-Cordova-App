@@ -1,4 +1,4 @@
-name: FINAL - Build APK (Guaranteed Fix)
+name: 🏆 FINAL-SUCCESS-APK-BUILD
 
 on:
   workflow_dispatch: # 允许手动点击触发
@@ -11,36 +11,31 @@ jobs:
     - name: 1. Checkout Code
       uses: actions/checkout@v4
 
-    - name: 2. Setup Node.js & Install CLI
+    - name: 2. Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18' 
     
-    - name: 3. Install Cordova CLI (Global)
-      run: |
-        # 只安装 Cordova CLI，避开 package.json 错误
-        npm install -g cordova
-
-    - name: 4. Fix Folder Structure for Cordova 
+    - name: 3. 结构修复与编译 (FINAL FIX - 一体化)
       run: |
         echo "--- 正在修复文件结构：创建 www 文件夹并移动核心内容 ---"
-        # 自动创建 www 文件夹
+        # 1. 创建 www 文件夹 (修复 GitHub 网页上传问题)
         mkdir www
-        # 自动移动您的网页文件到 www 文件夹内 (只移动您仓库里已有的文件)
+        # 2. 移动您的网页文件到 www 文件夹内 (只移动您仓库里已有的文件)
         mv index.html www/
         mv script.js www/
         mv styles.css www/
         
-    - name: 5. Add Android Platform & Build
-      run: |
-        # 添加 Android 平台
-        cordova platform add android@12.0.0 --no-telemetry
-        # 构建 Debug APK 
-        cordova build android --debug --no-telemetry
+        echo "--- 正在使用 NPX 临时环境安装平台并编译 APK (绕过所有 npm 路径错误) ---"
+        # 3. 使用 npx 临时安装 Cordova，并添加 Android 平台
+        npx -p cordova@12.0.0 cordova platform add android@12.0.0 --no-telemetry
         
-    - name: 6. Upload APK
+        # 4. 编译 Debug APK
+        npx -p cordova@12.0.0 cordova build android --debug --no-telemetry
+        
+    - name: 4. Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Final-APK-Download
+        name: Final-APK-Download-Success
         path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
