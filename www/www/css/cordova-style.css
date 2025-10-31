@@ -1,0 +1,1207 @@
+/* Cordova应用样式 - Gemini聊天助手移动版 */
+/* 这个文件包含了所有样式，适配Cordova移动应用环境 */
+
+/* 全局样式 */
+:root {
+  --primary-color: #4285f4;
+  --secondary-color: #34a853;
+  --danger-color: #ea4335;
+  --warning-color: #fbbc05;
+  --dark-bg: #1a1a1a;
+  --light-bg: #ffffff;
+  --dark-surface: #2d2d2d;
+  --light-surface: #f5f5f5;
+  --dark-text: #ffffff;
+  --light-text: #333333;
+  --dark-border: #3a3a3a;
+  --light-border: #e0e0e0;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--light-bg);
+  color: var(--light-text);
+  line-height: 1.6;
+  transition: var(--transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Cordova特定样式 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* 允许文本选择的元素 */
+}
+
+body.dark-theme {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* 允许文本选择的元素 */
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* 应用容器 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  /* Cordova特定样式 - 防止内容被状态栏遮挡 */
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+/* 头部样式 */
+.header {
+  background-color: var(--light-surface);
+  border-bottom: 1px solid var(--light-border);
+  padding: 0 1rem;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  transition: var(--transition);
+  /* Cordova特定样式 - 防止内容被状态栏遮挡 */
+  padding-top: calc(1rem + constant(safe-area-inset-top));
+  padding-top: calc(1rem + env(safe-area-inset-top));
+}
+
+.dark-theme .header {
+  background-color: var(--dark-surface);
+  border-bottom-color: var(--dark-border);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  height: 60px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.logo i {
+  margin-right: 0.5rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+/* 主容器 */
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 侧边栏样式 - Cordova移动版优化 */
+.sidebar {
+  position: fixed;
+  left: -280px;
+  top: 0;
+  width: 280px;
+  height: 100%;
+  background-color: var(--light-surface);
+  border-right: 1px solid var(--light-border);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  z-index: 200;
+  /* Cordova特定样式 - 防止内容被状态栏遮挡 */
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.dark-theme .sidebar {
+  background-color: var(--dark-surface);
+  border-right-color: var(--dark-border);
+}
+
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dark-theme .sidebar-header {
+  border-bottom-color: var(--dark-border);
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  /* Cordova特定样式 - 改善滚动性能 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.conversation-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-height: 44px;
+}
+
+.conversation-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .conversation-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.conversation-item.active {
+  background-color: rgba(66, 133, 244, 0.1);
+  color: var(--primary-color);
+}
+
+.conversation-title {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.conversation-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.conversation-item:hover .conversation-actions {
+  opacity: 1;
+}
+
+/* 分页控件 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid var(--light-border);
+}
+
+.dark-theme .pagination {
+  border-top-color: var(--dark-border);
+}
+
+.pagination-btn {
+  background-color: transparent;
+  border: 1px solid var(--light-border);
+  color: var(--light-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-theme .pagination-btn {
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.pagination-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .pagination-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.pagination-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* 聊天容器 */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Cordova特定样式 - 防止内容被底部导航栏遮挡 */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.chat-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dark-theme .chat-header {
+  border-bottom-color: var(--dark-border);
+}
+
+.chat-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  /* Cordova特定样式 - 改善滚动性能 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.message {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 80%;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.message.user .message-avatar {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.message.assistant .message-avatar {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.message-content {
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.message.user .message-content {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message.assistant .message-content {
+  background-color: var(--light-surface);
+  color: var(--light-text);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+.dark-theme .message.assistant .message-content {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+}
+
+/* 欢迎消息 */
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 2rem;
+}
+
+.welcome-content i {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.welcome-content h2 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.suggestion-chip {
+  background-color: var(--light-surface);
+  border: 1px solid var(--light-border);
+  border-radius: 16px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: var(--transition);
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-theme .suggestion-chip {
+  background-color: var(--dark-surface);
+  border-color: var(--dark-border);
+}
+
+.suggestion-chip:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 聊天输入区域 */
+.chat-input-container {
+  padding: 1rem;
+  border-top: 1px solid var(--light-border);
+  /* Cordova特定样式 - 防止内容被底部导航栏遮挡 */
+  padding-bottom: calc(1rem + constant(safe-area-inset-bottom));
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.dark-theme .chat-input-container {
+  border-top-color: var(--dark-border);
+}
+
+.chat-input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+
+.message-input {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--light-border);
+  border-radius: 22px;
+  resize: none;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: var(--light-surface);
+  color: var(--light-text);
+  transition: var(--transition);
+  /* Cordova特定样式 - 允许文本选择 */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.dark-theme .message-input {
+  background-color: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.message-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 按钮样式 */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-height: 44px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #3367d6;
+}
+
+.btn-secondary {
+  background-color: var(--light-surface);
+  color: var(--light-text);
+  border: 1px solid var(--light-border);
+}
+
+.dark-theme .btn-secondary {
+  background-color: var(--dark-surface);
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #d33b2c;
+}
+
+.btn-text {
+  background-color: transparent;
+  color: var(--light-text);
+  padding: 0.25rem 0.5rem;
+}
+
+.dark-theme .btn-text {
+  color: var(--dark-text);
+}
+
+.btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .btn-text:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-icon {
+  background-color: transparent;
+  color: var(--light-text);
+  padding: 0.5rem;
+  border-radius: 50%;
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-theme .btn-icon {
+  color: var(--dark-text);
+}
+
+.btn-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* 模态框样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  /* Cordova特定样式 - 防止内容被状态栏和底部导航栏遮挡 */
+  padding: constant(safe-area-inset-top) constant(safe-area-inset-right) constant(safe-area-inset-bottom) constant(safe-area-inset-left);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: var(--light-surface);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(20px);
+  transition: var(--transition);
+  /* Cordova特定样式 - 改善滚动性能 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.dark-theme .modal-content {
+  background-color: var(--dark-surface);
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dark-theme .modal-header {
+  border-bottom-color: var(--dark-border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--light-text);
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: var(--transition);
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-theme .close-btn {
+  color: var(--dark-text);
+}
+
+.close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.modal-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--light-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.dark-theme .modal-footer {
+  border-top-color: var(--dark-border);
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--light-border);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--light-bg);
+  color: var(--light-text);
+  transition: var(--transition);
+  /* Cordova特定样式 - 允许文本选择 */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.dark-theme .form-control {
+  background-color: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  /* Cordova特定样式 - 增大触摸区域 */
+  min-height: 44px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+}
+
+/* 设置部分 */
+.settings-section {
+  margin-bottom: 1.5rem;
+}
+
+.settings-section h3 {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  color: var(--primary-color);
+}
+
+/* 滑块样式 */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--light-border);
+  outline: none;
+}
+
+.dark-theme .slider {
+  background: var(--dark-border);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+/* 图片选择器 */
+.image-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.image-option {
+  position: relative;
+  padding-top: 75%; /* 4:3 宽高比 */
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.image-option img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-option.selected {
+  border-color: var(--primary-color);
+}
+
+.image-option .remove-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.image-option:hover .remove-btn {
+  opacity: 1;
+}
+
+/* 认证相关 */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--light-border);
+}
+
+.dark-theme .auth-divider::before,
+.dark-theme .auth-divider::after {
+  background-color: var(--dark-border);
+}
+
+.auth-divider span {
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* 回到顶部按钮 */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  z-index: 100;
+  /* Cordova特定样式 - 防止内容被底部导航栏遮挡 */
+  bottom: calc(2rem + constant(safe-area-inset-bottom));
+  bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+
+.scroll-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-to-top-btn:hover {
+  background-color: #3367d6;
+}
+
+/* 代码高亮 */
+pre {
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  /* Cordova特定样式 - 改善滚动性能 */
+  -webkit-overflow-scrolling: touch;
+}
+
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+:not(pre) > code {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0.125rem 0.25rem;
+  border-radius: 3px;
+}
+
+.dark-theme :not(pre) > code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 表格样式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--light-border);
+}
+
+.dark-theme th,
+.dark-theme td {
+  border-bottom-color: var(--dark-border);
+}
+
+th {
+  background-color: var(--light-surface);
+  font-weight: 600;
+}
+
+.dark-theme th {
+  background-color: var(--dark-surface);
+}
+
+/* Cordova特定样式 - 移动设备优化 */
+/* 适配不同屏幕尺寸 */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+  
+  .sidebar.show {
+    left: 0;
+  }
+  
+  .chat-container {
+    width: 100%;
+  }
+  
+  .message {
+    max-width: 90%;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  .header-content {
+    padding: 0 0.5rem;
+  }
+}
+
+/* 适配横屏模式 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .header {
+    height: 50px;
+  }
+  
+  .header-content {
+    height: 50px;
+  }
+  
+  .chat-input-container {
+    padding: 0.5rem;
+  }
+}
+
+/* 适配iPhone X及以上机型 */
+@supports (padding: max(0px)) {
+  .app-container {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  .sidebar {
+    padding-left: max(0px, env(safe-area-inset-left));
+  }
+  
+  .modal {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* 加载动画 */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: var(--primary-color);
+}
+
+.loading-indicator span {
+  margin-left: 0.5rem;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* 通知样式 */
+.notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  max-width: 300px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: var(--transition);
+  /* Cordova特定样式 - 防止内容被状态栏遮挡 */
+  top: calc(1rem + constant(safe-area-inset-top));
+  top: calc(1rem + env(safe-area-inset-top));
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification.success {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.notification.error {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.notification.warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.notification.info {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Cordova特定样式 - 触摸反馈 */
+.btn:active,
+.suggestion-chip:active,
+.conversation-item:active {
+  transform: scale(0.98);
+}
+
+/* Cordova特定样式 - 禁用长按选择 */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Cordova特定样式 - 滚动条样式 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Cordova特定样式 - 字体大小调整 */
+.font-size-small {
+  font-size: 14px;
+}
+
+.font-size-medium {
+  font-size: 16px;
+}
+
+.font-size-large {
+  font-size: 18px;
+}
+
+/* Cordova特定样式 - 背景样式 */
+.bg-gradient {
+  background: linear-gradient(135deg, #4285f4, #34a853);
+}
+
+.bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Cordova特定样式 - 遮罩层 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
+}

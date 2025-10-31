@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src * 'unsafe-inline';">
+    <title>Gemini聊天助手</title>
+    <link rel="stylesheet" href="css/cordova-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Gemini助手</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-icon" id="newChatBtn" title="新对话">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="btn btn-icon" id="settingsBtn" title="设置">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-info" id="userInfo">
+                    <button class="btn btn-text" id="loginBtn">登录</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- 侧边栏 -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h3>对话历史</h3>
+                </div>
+                <div class="conversation-list" id="conversationList">
+                    <!-- 对话列表将通过JavaScript动态生成 -->
+                </div>
+                <div class="pagination">
+                    <button class="btn btn-small" id="prevPageBtn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="pageInfo">1 / 1</span>
+                    <button class="btn btn-small" id="nextPageBtn" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- 主聊天区域 -->
+            <main class="chat-container">
+                <div class="chat-header">
+                    <h2 id="chatTitle">新对话</h2>
+                    <div class="chat-actions">
+                        <button class="btn btn-icon" id="renameChatBtn" title="重命名对话">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-icon" id="deleteChatBtn" title="删除对话">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-icon" id="toggleSidebarBtn" title="切换侧边栏">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message" id="welcomeMessage">
+                        <div class="welcome-content">
+                            <h1>欢迎使用Gemini聊天助手</h1>
+                            <p>我是基于Google Gemini AI的智能助手，可以帮助您解答问题、提供创意和完成各种任务。</p>
+                            <div class="suggestions">
+                                <div class="suggestion-chip" data-suggestion="解释量子计算的基本原理">
+                                    <i class="fas fa-atom"></i>
+                                    解释量子计算的基本原理
+                                </div>
+                                <div class="suggestion-chip" data-suggestion="写一首关于春天的诗">
+                                    <i class="fas fa-feather"></i>
+                                    写一首关于春天的诗
+                                </div>
+                                <div class="suggestion-chip" data-suggestion="如何提高工作效率？">
+                                    <i class="fas fa-chart-line"></i>
+                                    如何提高工作效率？
+                                </div>
+                                <div class="suggestion-chip" data-suggestion="推荐一些健康的生活方式">
+                                    <i class="fas fa-heart"></i>
+                                    推荐一些健康的生活方式
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <textarea class="chat-input" id="chatInput" placeholder="输入消息..." rows="1"></textarea>
+                        <button class="btn btn-primary" id="sendBtn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 设置模态框 -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>设置</h2>
+                <button class="btn btn-icon modal-close" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>AI模型设置</h3>
+                    <div class="form-group">
+                        <label for="apiKey">API密钥</label>
+                        <input type="password" id="apiKey" class="form-control" placeholder="输入您的Gemini API密钥">
+                        <small class="form-text">获取API密钥: <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">模型</label>
+                        <select id="model" class="form-control">
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (快速)</option>
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (强大)</option>
+                            <option value="gemini-pro">Gemini Pro (标准)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="temperature">创造性 (Temperature): <span id="temperatureValue">0.7</span></label>
+                        <input type="range" id="temperature" class="form-control" min="0" max="1" step="0.1" value="0.7">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxTokens">最大输出长度</label>
+                        <input type="number" id="maxTokens" class="form-control" min="1" max="8192" value="2048">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>界面设置</h3>
+                    <div class="form-group">
+                        <label for="theme">主题</label>
+                        <select id="theme" class="form-control">
+                            <option value="light">浅色</option>
+                            <option value="dark">深色</option>
+                            <option value="auto">跟随系统</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fontSize">字体大小</label>
+                        <select id="fontSize" class="form-control">
+                            <option value="small">小</option>
+                            <option value="medium" selected>中</option>
+                            <option value="large">大</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>背景设置</h3>
+                    <div class="form-group">
+                        <label for="backgroundType">背景类型</label>
+                        <select id="backgroundType" class="form-control">
+                            <option value="none">无背景</option>
+                            <option value="gradient">渐变</option>
+                            <option value="image">图片</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="imageUploadGroup" style="display: none;">
+                        <label for="backgroundImage">背景图片</label>
+                        <input type="file" id="backgroundImage" class="form-control" accept="image/*">
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="resetSettingsBtn">重置设置</button>
+                <button class="btn btn-primary" id="saveSettingsBtn">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>登录</h2>
+                <button class="btn btn-icon modal-close" id="closeLoginBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginUsername">用户名</label>
+                        <input type="text" id="loginUsername" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">密码</label>
+                        <input type="password" id="loginPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">登录</button>
+                </form>
+                <div class="auth-divider">
+                    <span>或</span>
+                </div>
+                <button class="btn btn-secondary btn-block" id="showRegisterBtn">注册新账户</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>注册</h2>
+                <button class="btn btn-icon modal-close" id="closeRegisterBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerUsername">用户名</label>
+                        <input type="text" id="registerUsername" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">邮箱</label>
+                        <input type="email" id="registerEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">密码</label>
+                        <input type="password" id="registerPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认密码</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">注册</button>
+                </form>
+                <div class="auth-divider">
+                    <span>或</span>
+                </div>
+                <button class="btn btn-secondary btn-block" id="showLoginBtn">已有账户？登录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回到顶部按钮 -->
+    <button class="btn btn-fab" id="scrollToTopBtn" title="回到顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 加载指示器 -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-dots">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Cordova脚本 -->
+    <script src="cordova.js"></script>
+    <!-- 应用脚本 -->
+    <script src="js/cordova-script.js"></script>
+    <script src="js/cordova-api-integration.js"></script>
+</body>
+</html>
