@@ -1,0 +1,46 @@
+name: Fix Structure and Build APK
+
+on:
+  workflow_dispatch: # 允许手动点击触发
+
+jobs:
+  build-android-debug:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 2. Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18' 
+
+    - name: 3. Install Cordova CLI & Dependencies
+      run: |
+        npm install -g cordova
+        npm install
+
+    - name: 4. Fix Folder Structure for Cordova 
+      run: |
+        echo "--- 正在修复文件结构：创建 www 文件夹并移动内容 ---"
+        # 自动创建 www 文件夹
+        mkdir www
+        # 自动移动您的网页文件到 www 文件夹内
+        mv index.html www/
+        mv script.js www/
+        mv styles.css www/
+        mv api-integration.js www/
+
+    - name: 5. Add Android Platform & Build
+      run: |
+        cordova platform add android@12.0.0 --no-telemetry
+        # 构建 Debug APK (无需签名，用于测试)
+        cordova build android --debug --no-telemetry
+
+    - name: 6. Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Final-Debug-APK
+        path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 7
