@@ -19,7 +19,7 @@ jobs:
     - name: 3. Install Cordova CLI & Dependencies
       run: |
         npm install -g cordova
-        npm install
+        
 
     - name: 4. Fix Folder Structure for Cordova 
       run: |
